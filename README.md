@@ -1,1 +1,2 @@
 # freeswitch-
+# default.xml

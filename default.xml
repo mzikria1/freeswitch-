@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    NOTICE:
+
+    This context is usually accessed via authenticated callers on the sip profile on port 5060
+    or transfered callers from the public context which arrived via the sip profile on port 5080.
+
+    Authenticated users will use the user_context variable on the user to determine what context
+    they can access.  You can also add a user in the directory with the cidr= attribute acl.conf.xml
+    will build the domains ACL using this value.
+-->
+<!-- http://wiki.freeswitch.org/wiki/Dialplan_XML -->
+<include>
+  <context name="default">
+
+    <extension name="unloop">
+      <condition field="${unroll_loops}" expression="^true$"/>
+      <condition field="${sip_looped_call}" expression="^true$">
+	<action application="deflect" data="${destination_number}"/>
+      </condition>
+    </extension>
+
+    <!-- Example of doing things based on time of day.
+
+	 year = 4 digit year. Example year="2009"
+	 yday = 1-365
+	 mon = 1-12
+	 mday = 1-31
+	 week = 1-52
+	 mweek= 1-6
+	 wday = 1-7
+	 hour = 0-23
+	 minute = 0-59
+	 minute-of-day = 1-1440
+
+	 Example:
+	 <condition minute-of-day="540-1080"> (9am to 6pm EVERY day)
+	 do something ...
+	 </condition>
+    -->
+           
+	 <extension name="shout">
+		   <condition field="destination_number" expression="^750$">
+			       <action application="answer"/>
+			       <action application="playback" data="/home/zikria/funk-201.mp3"/>
+				     </condition>
+			     </extension>
+                                                              
+
+
+
+                    <extension name="example_bridge">
+	         <condition field="destination_number" expression="^0987$">
+	      <action application="set" data="call_uuid=$${uuid_generate}"/>
+	    <action application="record_session" data="/home/zikria/${strftime(%Y-%m-%d-%H-%M-%S)}_${call_uuid}.mp3"/>
+		     <action application="bridge" data="user/1001,user/1010"/>
+	                   </condition>
+		     </extension>
+
+
+
+
+
+			   <extension name="play-wav">
+			       <condition field="destination_number" expression="^169$">
+			    <action application="answer"/>
+			   <action application="playback" data="/home/zikria/ali.wav"/>						                   <action application="hangup"/>
+			 </condition>
+		           </extension>
+
+
+			  
+
+
+
+   
+			   <extension name="conference-room">
+				   <condition field="destination_number" expression="^1212$">
+					   <action application="answer"/>
+					   <action application="conference" data="room_name@Ali"/>  
+				   </condition>
+			   </extension>
+  
+ 
+			   <extension name="simple_ivr_menu">
+				   <condition field="destination_number" expression="^5000$">
+					   <action application="answer"/>
+					   <action application="ivr" data="simple_ivr"/>
+				   </condition>
+			   </extension>
+
+
+
+			   <extension name="example_extension">
+				   <condition field="destination_number" expression="^1234$">
+				   <action application="answer"/>
+		  <action application="set" data="call_uuid=$${uuid}"/>
+	   <action application="record_session" data="/path/to/recordings/${strftime(%Y-%m-%d-%H-%M-%S)}_${call_uuid}.mp3"/>
+					   <action application="bridge" data="user/1001"/>
+					   <action application="hangup"/>
+				   </condition>
+			   </extension>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </context>
+</include>
